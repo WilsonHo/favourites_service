@@ -1,6 +1,9 @@
 package models
 
+import actors.NotificationActor
 import models.DAO.FavouriteStudioDAO
+import play.api.Play.current
+import play.api.libs.concurrent.Akka
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -11,6 +14,7 @@ import play.api.libs.json._
 case class FavouriteStudio(userId: Int, studioId: Int)
 
 object FavouriteStudio {
+  lazy val notificationActor = Akka.system.actorOf(NotificationActor.props)
 
   implicit val favouriteStudioFormat: Format[FavouriteStudio] = (
     (__ \ "user_id").format[Int] and
@@ -20,6 +24,7 @@ object FavouriteStudio {
   def addFavourite(userId: Int, studioId: Int): FavouriteStudio = {
     val favourite = FavouriteStudio(userId, studioId)
     FavouriteStudioDAO.create(favourite)
+    notificationActor ! favourite
     favourite
   }
 
@@ -37,7 +42,7 @@ object FavouriteStudio {
     }
   }
 
-  def findAllByUser(userId: Int):List[FavouriteStudio] = {
+  def findAllByUser(userId: Int): List[FavouriteStudio] = {
     FavouriteStudioDAO.index(userId)
   }
 
