@@ -3,7 +3,19 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
+GET           /                                                   controllers.HomeController.index
+
+# curl -vX POST http://localhost:9000/users/123/favourite_studios/123
+POST          /users/:user_id/favourite_studios/:studio_id        controllers.FavouriteStudiosController.add(user_id:Int, studio_id :Int)
+
+# curl -vX DELETE http://localhost:9000/users/123/favourite_studios/123
+DELETE        /users/:user_id/favourite_studios/:studio_id        controllers.FavouriteStudiosController.remove(user_id:Int, studio_id :Int)
+
+# curl -vX GET http://localhost:9000/users/123/favourite_studios/123
+GET           /users/:user_id/favourite_studios/:studio_id        controllers.FavouriteStudiosController.find(user_id:Int, studio_id :Int)
+
+# curl -vX GET http://localhost:9000/users/123/favourite_studios
+GET           /users/:user_id/favourite_studios                   controllers.FavouriteStudiosController.findAll(user_id:Int)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET           /assets/*file                                       controllers.Assets.versioned(path="/public", file: Asset)
